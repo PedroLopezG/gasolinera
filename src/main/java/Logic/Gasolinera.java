@@ -13,12 +13,14 @@ public class Gasolinera implements Runnable {
     private List<Coches> coches;
     private Iterator<Long> times;
 
-    public Gasolinera(int numSurtidores) {
+    private int numSurtidores = 4;
+
+    public Gasolinera() {
         if (numSurtidores < 2) {
             throw new IllegalArgumentException("Debe haber mas de un surtidor");
         }
 
-        this.surtidores = new ArrayList<>();
+        this.surtidores = new ArrayList<>(numSurtidores);
         this.coches = new ArrayList<>();
         this.times = new Random().longs(5, 10).iterator();
 
@@ -44,5 +46,14 @@ public class Gasolinera implements Runnable {
         for (Coches p : coches) {
             executorService.submit(p);
         }
+    }
+
+    public Surtidor buscarSurtidorLibre() {
+        for (Surtidor surtidor : surtidores) {
+            if (!surtidor.isHeld()) {
+                return surtidor;
+            }
+        }
+        return null;
     }
 }

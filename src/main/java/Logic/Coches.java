@@ -1,10 +1,14 @@
 package Logic;
 
 
+import org.slf4j.LoggerFactory;
+
+import java.util.logging.Logger;
+
 public class Coches implements Runnable {
 
     //private static Logger logger = LoggerFactory.getLogger(String.valueOf(Philosopher.class));
-
+    //private static Logger logger = (Logger) LoggerFactory.getLogger(Coches.class);
     private String name;
     private Logic.Gasolinera gasolinera;
     private Surtidor surtidor;
@@ -24,14 +28,25 @@ public class Coches implements Runnable {
 
     public void repostar() throws InterruptedException {
         long time = gasolinera.getTime();
+
+
+        System.out.println("El coche " + name + " está buscando un surtidor libre");
+        surtidor = gasolinera.buscarSurtidorLibre();
+        System.out.println("El coche " + name + " ha encontrado un surtidor libre");
+        surtidor.take();
+        System.out.println("El coche " + name + " está repostando durante " + time + " minutos");
+        Thread.sleep(gasolinera.getTime());
+        surtidor.drop();
+        System.out.println("El coche " + name + " ha terminado de repostar");
+
+
         //logger.info("{} thinking during {}ms", name, time);
         System.out.println(name + " repostando tardo " + time + " minutos");
 
-        spendTime(time);
+        //spendTime(time);
     }
 
     public void pagar() throws InterruptedException {
-        takeForks();
         long time = tiempoPago;
         //logger.info("{} eating during {}ms", name, time);
         System.out.println(name +" pagando tardo " + time + " minutos");
@@ -46,8 +61,8 @@ public class Coches implements Runnable {
             try {
                 //numero random entre 1 y 10
                 int random = (int) (Math.random() * 10 + 1);
-                Thread.sleep(random);
-                System.out.println("El surtidor #" + numSurtidor + " ha estado " + random + " minutos sin uso");
+                //Thread.sleep(random);
+                //System.out.println("El surtidor #" + numSurtidor + " ha estado " + random + " minutos sin uso");
                 repostar();
                 pagar();
 
@@ -58,9 +73,7 @@ public class Coches implements Runnable {
         }
     }
 
-    private void takeForks() {
-        surtidor.take();
-    }
+
 
     private void dejarSurtidor() {
         surtidor.drop();
